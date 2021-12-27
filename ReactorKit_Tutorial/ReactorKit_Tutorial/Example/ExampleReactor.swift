@@ -13,7 +13,7 @@ final class ExampleReactor: Reactor {
     
     /*
      만약 사용자로부터 Int값만 받길 원할 경우
-     혹은 글자수제한을 두고 싶다면 어떻게 막아야할까?
+     혹은 글자수제한을 두고 싶다면 어떻게 해야할까?
      */
     enum COUNT { // HANDLING VALID
         case success(_ count: String?)
@@ -59,6 +59,21 @@ extension ExampleReactor {
                 Observable.just(.reset),
                 Observable.just(.isReset(bool: false))
             ])
+            /*
+             Observable.concat 이란?
+             Combining Operator
+             순서대로 합쳐주는 것
+             ex.
+             let example = Observable.of([1,2])
+             let example2 = Observable.of([3,4])
+             Observable.concat([example, example2])
+                        .subscribe({ print($0) })
+                        .disposed(by: self.disposeBag)
+             1
+             2
+             3
+             4
+             */
         }
     }
     
@@ -69,9 +84,12 @@ extension ExampleReactor {
             _state.text = text
         case .plus(count: let count): // TODO: 좀더 깔끔하게 가능할까?
             switch self.countIncreased(count: count) {
-            case .success(let count): _state.count = count
-            case .failure: _state.count = "fail"
-//            case .failure(let alert): _state.alert = alert
+            case .success(let count):
+                _state.count = count
+            case .failure:
+                _state.count = "fail"
+//            case .failure(let alert):
+//                _state.alert = alert
             }
         case .reset:
             _state.text = nil
