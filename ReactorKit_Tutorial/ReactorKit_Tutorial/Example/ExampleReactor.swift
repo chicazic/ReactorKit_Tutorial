@@ -9,8 +9,8 @@ import ReactorKit
 import RxSwift
 
 final class ExampleReactor: Reactor {
-    // init
     
+    // MARK: init
     /*
      만약 사용자로부터 Int값만 받길 원할 경우
      혹은 글자수제한을 두고 싶다면 어떻게 해야할까?
