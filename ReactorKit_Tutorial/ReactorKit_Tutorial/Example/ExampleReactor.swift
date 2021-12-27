@@ -32,6 +32,7 @@ final class ExampleReactor: Reactor {
     enum Mutation {
         case write(text: String?)
         case plus(count: COUNT)
+//        case plus(count: String?, error: Error) // 이 방식도 괜찮을지도
         case reset
         case isReset(bool: Bool)
     }
@@ -89,6 +90,13 @@ extension ExampleReactor {
             case .failure:
                 _state.count = "fail"
             }
+//        case .plus(count: let count, error: let error):
+//            switch count {
+//            case .success(let count):
+//                _state.count = count
+//            case .failure:
+//                _state.count = "fail"
+//            }
         case .reset:
             _state.text = nil
             _state.count = "0"
