@@ -31,7 +31,7 @@ final class ExampleReactor: Reactor {
     
     enum Mutation {
         case write(text: String?)
-        case plus(count: String?)
+        case plus(count: COUNT)
         case reset
         case isReset(bool: Bool)
     }
@@ -52,7 +52,7 @@ extension ExampleReactor {
         case .textChanged(let text):
             return .just(.write(text: text))
         case .increased(let count):
-            return .just(.plus(count: count))
+            return self.countIncreased(count: count)
         case .reset:
             return .concat([
                 Observable.just(.isReset(bool: true)), // 로딩중을 알리는 로직으로 활용가능
@@ -82,14 +82,12 @@ extension ExampleReactor {
         switch mutation {
         case .write(text: let text):
             _state.text = text
-        case .plus(count: let count): // TODO: 좀더 깔끔하게 가능할까?
-            switch self.countIncreased(count: count) {
+        case .plus(count: let count):
+            switch count {
             case .success(let count):
                 _state.count = count
             case .failure:
                 _state.count = "fail"
-//            case .failure(let alert):
-//                _state.alert = alert
             }
         case .reset:
             _state.text = nil
@@ -104,10 +102,13 @@ extension ExampleReactor {
 extension ExampleReactor {
     
     // MARK: Private
-    private func countIncreased(count: String?) -> COUNT {
-        guard let _count = count, let countInt = Int(_count) else { return .failure }
+    private func countIncreased(count: String?) -> Observable<Mutation> {
+        guard let _count = count,
+              let countInt = Int(_count)
+        else { return .just(.plus(count: .failure)) }
+        
         let res = countInt + 1
         
-        return .success(String(res))
+        return .just(.plus(count: .success(String(res))))
     }
 }
